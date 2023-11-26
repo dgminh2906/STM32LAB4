@@ -23,7 +23,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "button.h"
-#include "global.h"
 #include "scheduler.h"
 /* USER CODE END Includes */
 
@@ -58,7 +57,35 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void ledred(){
+	HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+}
 
+void ledyellow(){
+	HAL_GPIO_TogglePin(LED_YELLOW_GPIO_Port, LED_YELLOW_Pin);
+}
+
+void ledgreen(){
+	HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
+}
+
+void ledblue(){
+	HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
+}
+
+void ledorange(){
+	HAL_GPIO_TogglePin(LED_ORANGE_GPIO_Port, LED_ORANGE_Pin);
+}
+
+void ledone(){
+	HAL_GPIO_TogglePin(LED_One_GPIO_Port, LED_One_Pin);
+}
+
+void ledbutton(){
+	if (isButtonPressed(0)) {
+		HAL_GPIO_TogglePin(LED_B_GPIO_Port, LED_B_Pin);
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -92,15 +119,26 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT (& htim2);
+  SCH_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  SCH_Add_Task(ledred, 500, 500);
+  SCH_Add_Task(ledyellow, 1000, 1000);
+  SCH_Add_Task(ledgreen, 1500, 1500);
+  SCH_Add_Task(ledblue, 2000, 2000);
+  SCH_Add_Task(ledorange, 2500, 2500);
+  // One shot task
+  SCH_Add_Task(ledone, 2000, 0);
+  // Task with Button
+  SCH_Add_Task(ledbutton, TIME_CYCLE, TIME_CYCLE);
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  SCH_Dispatch_Tasks();
   }
   /* USER CODE END 3 */
 }
@@ -180,7 +218,7 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM2_Init 2 */
-
+  TIME_CYCLE = 1/(8e6/(htim2.Init.Prescaler + 1)/(htim2.Init.Period + 1)) * 1000; // Time cycle
   /* USER CODE END TIM2_Init 2 */
 
 }
@@ -196,16 +234,15 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin|LED_BLUE_Pin
-                          |LED_ORANGE_Pin|LED_ORANGEA8_Pin|TX_Pin|RX_Pin, GPIO_PIN_RESET);
+                          |LED_ORANGE_Pin|LED_One_Pin|LED_B_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED_RED_Pin LED_YELLOW_Pin LED_GREEN_Pin LED_BLUE_Pin
-                           LED_ORANGE_Pin LED_ORANGEA8_Pin TX_Pin RX_Pin */
+                           LED_ORANGE_Pin LED_One_Pin LED_B_Pin */
   GPIO_InitStruct.Pin = LED_RED_Pin|LED_YELLOW_Pin|LED_GREEN_Pin|LED_BLUE_Pin
-                          |LED_ORANGE_Pin|LED_ORANGEA8_Pin|TX_Pin|RX_Pin;
+                          |LED_ORANGE_Pin|LED_One_Pin|LED_B_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -220,7 +257,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim){
+	SCH_Update();
+	getKeyInput();
+}
 /* USER CODE END 4 */
 
 /**

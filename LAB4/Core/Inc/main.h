@@ -68,14 +68,12 @@ void Error_Handler(void);
 #define LED_BLUE_GPIO_Port GPIOA
 #define LED_ORANGE_Pin GPIO_PIN_7
 #define LED_ORANGE_GPIO_Port GPIOA
-#define BUTTON_Pin GPIO_PIN_0
-#define BUTTON_GPIO_Port GPIOB
-#define LED_ORANGEA8_Pin GPIO_PIN_8
-#define LED_ORANGEA8_GPIO_Port GPIOA
-#define TX_Pin GPIO_PIN_9
-#define TX_GPIO_Port GPIOA
-#define RX_Pin GPIO_PIN_10
-#define RX_GPIO_Port GPIOA
+#define LED_One_Pin GPIO_PIN_8
+#define LED_One_GPIO_Port GPIOA
+#define LED_B_Pin GPIO_PIN_9
+#define LED_B_GPIO_Port GPIOA
+#define BUTTON_Pin GPIO_PIN_10
+#define BUTTON_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
