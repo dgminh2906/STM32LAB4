@@ -20,13 +20,13 @@ void SCH_Init(void){
 void SCH_Update(void){
 	for(int i = 0; i < current_index_task; i++) {
 		if(SCH_tasks_G[i].Delay > 0) {
-			// Decrease 1 cycle
+			// Decrement the delay
 			SCH_tasks_G[i].Delay--;
 		}
 		else {
-			// At the first time operation, time = Delay (input user)
-			// At later times, time = Period;
+			// Schedule periodic tasks to run again
 			SCH_tasks_G[i].Delay = SCH_tasks_G[i].Period;
+			//Inc. the ’RunMe’ flag
 			SCH_tasks_G[i].RunMe += 1;
 		}
 	}
@@ -61,7 +61,7 @@ uint32_t SCH_Add_Task (void(*pFunction)(), uint32_t DELAY, uint32_t PERIOD){
 	return -1;
 }
 uint8_t SCH_Delete_Task(uint32_t taskID){
-	// If no task in array or taskID invalid, return -1
+	// If no task in array or taskID not exist, return -1
 	if (current_index_task == 0 || taskID < 0 || taskID >= SCH_MAX_TASKS) {
 		return -1;
 	}

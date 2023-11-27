@@ -130,9 +130,9 @@ int main(void)
   SCH_Add_Task(ledblue, 2000, 2000);
   SCH_Add_Task(ledorange, 2500, 2500);
   // One shot task
-  SCH_Add_Task(ledone, 2000, 0);
+  SCH_Add_Task(ledone, 3000, 0);
   // Task with Button
-  SCH_Add_Task(ledbutton, TIME_CYCLE, TIME_CYCLE);
+  SCH_Add_Task(ledbutton, 100, 100);
   while (1)
   {
     /* USER CODE END WHILE */
